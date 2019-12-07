@@ -112,6 +112,35 @@ OBJ facePorta =
     vertices, faces2, 3
 };
 
+// Posição da fonte de luz
+GLfloat posLuz[4] = { 0.0, 50.0, 50.0, 1.0 };
+
+// Função responsável pela especificação dos parâmetros de iluminação
+void DefineIluminacao (void)
+{
+	GLfloat luzAmbiente[4]={0.2,0.2,0.2,1.0};
+	GLfloat luzDifusa[4]={0.7,0.7,0.7,1.0};	   // "cor"
+	GLfloat luzEspecular[4]={1.0, 1.0, 1.0, 1.0};// "brilho"
+
+	// Capacidade de brilho do material
+	GLfloat especularidade[4]={1.0,1.0,1.0,1.0};
+	GLint especMaterial = 60;
+
+	// Define a refletância do material
+	glMaterialfv(GL_FRONT,GL_SPECULAR, especularidade);
+	// Define a concentração do brilho
+	glMateriali(GL_FRONT,GL_SHININESS,especMaterial);
+
+	// Ativa o uso da luz ambiente
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente);
+
+	// Define os parâmetros da luz de número 0
+	glLightfv(GL_LIGHT0, GL_AMBIENT, luzAmbiente);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, luzDifusa );
+	glLightfv(GL_LIGHT0, GL_SPECULAR, luzEspecular );
+	glLightfv(GL_LIGHT0, GL_POSITION, posLuz );
+}
+
 // Desenha um objeto em wireframe
 void DesenhaObjetoWireframe(OBJ *objeto)
 {
@@ -144,6 +173,9 @@ void Desenha(void)
     // Limpa a janela de visualização com a cor
     // de fundo definida previamente
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Chama a função que especifica os parâmetros de iluminação
+	DefineIluminacao();
 
     //glutWireCube(30);
     //glutWireTeapot(30);
@@ -693,6 +725,13 @@ void Inicializa (void)
 {
     // Define a cor de fundo da janela de visualização como branca
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+    // Habilita a definição da cor do material a partir da cor corrente
+	glEnable(GL_COLOR_MATERIAL);
+	//Habilita o uso de iluminação
+	glEnable(GL_LIGHTING);
+	// Habilita a luz de número 0
+	glEnable(GL_LIGHT0);
 
     // Inicializa a variável que especifica o ângulo da projeção
     // perspectiva
