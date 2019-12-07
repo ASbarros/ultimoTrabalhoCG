@@ -38,7 +38,7 @@ struct VERT
 struct FACE
 {
     int total;	// total de vértices
-    int ind[4];	// índices para o vetor de vértices
+    int ind[8];	// índices para o vetor de vértices
 };
 
 // Define um objeto 3D
@@ -52,24 +52,64 @@ struct OBJ
 // Definição dos vértices
 VERT vertices[] =
 {
-    { 0, 0, 0 },	// v1 canto inf esquerdo diant.
-    { 0, 10, 0 },	// v5 canto sup esquerdo diant.
+    { 0, 0, 0 },	// v0 canto inf esquerdo diant.
+    { 0, 10, 0 },	// v1 canto sup esquerdo diant.
     { 10, 0, 0 },	// v2 canfo inf direito  diant.
-    { 10, 10, 0 },	// v6 canfo sup direito  diant.
-};
+    { 10, 10, 0 },	// v3 canfo sup direito  diant.
+    { 0,6,0 },  // 4
+    {10,6,0},    // 5
+    {5,0,0},    // 6
+    {3.5,6,0}, // 7
+    {3.5,0,0}, // 8
+    {6.5,6,0}, // 9
+    {6.5,0,0}, // 10
+    {50,10,0}, // 11
+    {25,25,25}, // 12  Bico do telhado
+    {0,10,50}, // 13
+    {50,10,50}, // 14
+    {50,10,30}, // 15
+    {70,10,30}, // 16
+    {70,10,10}, // 17
+    {50,10,10}, // 18
 
+    {50,10,0}, // 19
+
+};
 // Definição das faces
 FACE faces[] =
 {
-
     { 4, { 1,0,2,3}},	// lado dianteiro
+};
+FACE faces2[] =
+{
+    { 4, { 0,8,7,1}},
+    { 4, { 1,7,9,3}},
+    { 4, { 9,10,2,3}},
+};
+FACE faces3[] =
+{
+    { 3, { 1,12,11}},
+    { 3, { 1,13,12}},
+    { 3, { 13,14,12}},
+    { 3, { 14,15,12}},
+    { 3, { 15,16,12}},
+    { 3, { 16,17,12}},
+    { 3, { 17,18,12}},
+    { 3, { 18,19,12}},
 
 };
-
+OBJ telhado =
+{
+    vertices, faces3, 8
+};
 // Finalmente, define o objeto pirâmide
 OBJ faceParede =
 {
     vertices, faces, 1
+};
+OBJ facePorta =
+{
+    vertices, faces2, 3
 };
 
 // Desenha um objeto em wireframe
@@ -79,13 +119,22 @@ void DesenhaObjetoWireframe(OBJ *objeto)
     // Percorre todas as faces
     for(int f=0; f < objeto->total_faces; f++)
     {
-        glBegin(GL_QUADS);
+        glBegin(GL_POLYGON);
         // Percorre todos os vértices da face
         for(int v=0; v < objeto->faces[f].total; v++)
             glVertex3f(objeto->vertices[objeto->faces[f].ind[v]].x,
                        objeto->vertices[objeto->faces[f].ind[v]].y,
                        objeto->vertices[objeto->faces[f].ind[v]].z);
         glEnd();
+        /*
+                glBegin(GL_QUADS);
+                // Percorre todos os vértices da face
+                for(int v=(objeto->faces[f].total) -1; v >= 0; v--)
+                    glVertex3f(objeto->vertices[objeto->faces[f].ind[v]].x,
+                               objeto->vertices[objeto->faces[f].ind[v]].y,
+                               objeto->vertices[objeto->faces[f].ind[v]].z);
+                glEnd();
+        */
     }
 }
 
@@ -94,10 +143,7 @@ void Desenha(void)
 {
     // Limpa a janela de visualização com a cor
     // de fundo definida previamente
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    // Altera a cor do desenho para preto
-    glColor3f(0.0f, 0.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //glutWireCube(30);
     //glutWireTeapot(30);
@@ -110,14 +156,34 @@ void Desenha(void)
     //glutWireIcosahedron();
 
 
-    //Desenha o objeto definido anteriormente: uma pirâmide
+    // Telhado
+
+    glColor3f(1.0f, 0.0f, 0.0f);
+    DesenhaObjetoWireframe(&telhado);
+
+    glColor3f(0.0f, 0.0f, 0.0f);
+
     //PAREDES
     DesenhaObjetoWireframe(&faceParede);
     //2
     glPushMatrix();
     glTranslated(10, 0, 0);
     DesenhaObjetoWireframe(&faceParede);
+    glRotated(-90,0,1,0);
+    DesenhaObjetoWireframe(&faceParede);
+    glTranslated(10,0,0);
+    DesenhaObjetoWireframe(&facePorta);
+    glTranslated(10,0,0);
+    DesenhaObjetoWireframe(&facePorta);
+    glTranslated(-20,0,0);
+    glRotated(-90,0,1,0);
+    glTranslated(-10,0,-10);
+    DesenhaObjetoWireframe(&faceParede);
+    glTranslated(-10,0,0);
+    DesenhaObjetoWireframe(&facePorta);
     glPopMatrix();
+
+    glColor3f(0.0f, 0.0f, 0.0f);
 
     //3
     glPushMatrix();
@@ -128,6 +194,8 @@ void Desenha(void)
     //4
     glPushMatrix();
     glTranslated(30, 0, 0);
+    DesenhaObjetoWireframe(&faceParede);
+    glRotated(-90,0,1,0);
     DesenhaObjetoWireframe(&faceParede);
     glPopMatrix();
 
@@ -180,6 +248,8 @@ void Desenha(void)
     glPushMatrix();
     glTranslated(60, 0, 30);
     DesenhaObjetoWireframe(&faceParede);
+    glTranslated(-20,0,0);
+    DesenhaObjetoWireframe(&facePorta);
     glPopMatrix();
 
     //13
@@ -200,6 +270,7 @@ void Desenha(void)
     glPushMatrix();
     glTranslated(40, 0, 50);
     DesenhaObjetoWireframe(&faceParede);
+
     glPopMatrix();
 
     //16
@@ -213,6 +284,8 @@ void Desenha(void)
     glPushMatrix();
     glTranslated(30, 0, 50);
     DesenhaObjetoWireframe(&faceParede);
+    glTranslated(0,0,-10);
+    DesenhaObjetoWireframe(&facePorta);
     glPopMatrix();
 
     //18
@@ -220,18 +293,27 @@ void Desenha(void)
     glTranslated(30, 0, 50);
     glRotated(90, 0, 1, 0);
     DesenhaObjetoWireframe(&faceParede);
+    glTranslated(0,0,10);
+    DesenhaObjetoWireframe(&faceParede);
+    glTranslated(10,0,0);
+    DesenhaObjetoWireframe(&faceParede);
+    glColor3f(0.0f, 0.0f, 0.0f);
     glPopMatrix();
 
     //19
     glPushMatrix();
     glTranslated(20, 0, 40);
     DesenhaObjetoWireframe(&faceParede);
+
     glPopMatrix();
 
     //20
     glPushMatrix();
     glTranslated(10, 0, 40);
     DesenhaObjetoWireframe(&faceParede);
+    glRotated(90,0,1,0);
+    DesenhaObjetoWireframe(&faceParede);
+    glColor3f(0.0f, 0.0f, 0.0f);
     glPopMatrix();
 
     //21
@@ -259,6 +341,7 @@ void Desenha(void)
     glTranslated(0, 0, 40);
     glRotated(90, 0, 1, 0);
     DesenhaObjetoWireframe(&faceParede);
+
     glPopMatrix();
 
     //25
@@ -273,6 +356,9 @@ void Desenha(void)
     glTranslated(0, 0, 20);
     glRotated(90, 0, 1, 0);
     DesenhaObjetoWireframe(&faceParede);
+    glRotated(-90,0,1,0);
+    DesenhaObjetoWireframe(&faceParede);
+    glColor3f(0.0f, 0.0f, 0.0f);
     glPopMatrix();
 
     //27
@@ -282,11 +368,15 @@ void Desenha(void)
     DesenhaObjetoWireframe(&faceParede);
     glPopMatrix();
 
+
+
+
     //CHAO
     glColor3f(0.5f, 0.25f, 0.0f);
 
     //28 ATÉ 32
-    for(int i = 0; i < 50; i = i + 10) {
+    for(int i = 0; i < 50; i = i + 10)
+    {
         glPushMatrix();
         glTranslated(i, 0, 0);
         glRotated(90, 1, 0, 0);
@@ -294,7 +384,8 @@ void Desenha(void)
         glPopMatrix();
     }
     //33 ATÉ 39
-    for(int i = 0; i < 70; i = i + 10) {
+    for(int i = 0; i < 70; i = i + 10)
+    {
         glPushMatrix();
         glTranslated(i, 0, 10);
         glRotated(90, 1, 0, 0);
@@ -303,7 +394,8 @@ void Desenha(void)
     }
 
     //40 ATÉ 46
-    for(int i = 0; i < 70; i = i + 10) {
+    for(int i = 0; i < 70; i = i + 10)
+    {
         glPushMatrix();
         glTranslated(i, 0, 20);
         glRotated(90, 1, 0, 0);
@@ -312,7 +404,8 @@ void Desenha(void)
     }
 
     //47 ATÉ 51
-    for(int i = 0; i < 50; i = i + 10) {
+    for(int i = 0; i < 50; i = i + 10)
+    {
         glPushMatrix();
         glTranslated(i, 0, 30);
         glRotated(90, 1, 0, 0);
@@ -341,12 +434,71 @@ void Desenha(void)
     DesenhaObjetoWireframe(&faceParede);
     glPopMatrix();
 
-
+    // Grama
+    glColor3f(0, 1, 0);
+    for(int i = 0; i < 120; i = i + 10)
+    {
+        glPushMatrix();
+        glTranslated(-20+i,0, -10);
+        glRotated(90,1, 0, 0);
+        DesenhaObjetoWireframe(&faceParede);
+        glPopMatrix();
+    }
+    for(int i = 0; i < 120; i = i + 10)
+    {
+        glPushMatrix();
+        glTranslated(-20+i, 0, 0);
+        glRotated(90,1, 0, 0);
+        DesenhaObjetoWireframe(&faceParede);
+        glPopMatrix();
+    }
+    for(int i = 0; i < 120; i = i + 10)
+    {
+        glPushMatrix();
+        glTranslated(-20+i,0, 10);
+        glRotated(90,1, 0, 0);
+        DesenhaObjetoWireframe(&faceParede);
+        glPopMatrix();
+    }
+    for(int i = 0; i < 120; i = i + 10)
+    {
+        glPushMatrix();
+        glTranslated(-20+i,0, 20);
+        glRotated(90,1, 0, 0);
+        DesenhaObjetoWireframe(&faceParede);
+        glPopMatrix();
+    }
+    for(int i = 0; i < 120; i = i + 10)
+    {
+        glPushMatrix();
+        glTranslated(-20+i,0, 30);
+        glRotated(90,1, 0, 0);
+        DesenhaObjetoWireframe(&faceParede);
+        glPopMatrix();
+    }
+    for(int i = 0; i < 120; i = i + 10)
+    {
+        glPushMatrix();
+        glTranslated(-20+i,0, 40);
+        glRotated(90,1, 0, 0);
+        DesenhaObjetoWireframe(&faceParede);
+        glPopMatrix();
+    }
+    for(int i = 0; i < 120; i = i + 10)
+    {
+        glPushMatrix();
+        glTranslated(-20+i,0, 50);
+        glRotated(90,1, 0, 0);
+        DesenhaObjetoWireframe(&faceParede);
+        glPopMatrix();
+    }
+/*
     //TETO
     glColor3f(0.0f, 0.0f, 1.0f);
 
     //55 ATÉ 59
-    for(int i = 0; i < 50; i = i + 10) {
+    for(int i = 0; i < 50; i = i + 10)
+    {
         glPushMatrix();
         glTranslated(i, 10, 0);
         glRotated(90, 1, 0, 0);
@@ -354,7 +506,8 @@ void Desenha(void)
         glPopMatrix();
     }
     //60 ATÉ 66
-    for(int i = 0; i < 70; i = i + 10) {
+    for(int i = 0; i < 70; i = i + 10)
+    {
         glPushMatrix();
         glTranslated(i, 10, 10);
         glRotated(90, 1, 0, 0);
@@ -363,7 +516,8 @@ void Desenha(void)
     }
 
     //67 ATÉ 73
-    for(int i = 0; i < 70; i = i + 10) {
+    for(int i = 0; i < 70; i = i + 10)
+    {
         glPushMatrix();
         glTranslated(i, 10, 20);
         glRotated(90, 1, 0, 0);
@@ -372,7 +526,8 @@ void Desenha(void)
     }
 
     //74 ATÉ 78
-    for(int i = 0; i < 50; i = i + 10) {
+    for(int i = 0; i < 50; i = i + 10)
+    {
         glPushMatrix();
         glTranslated(i, 10, 30);
         glRotated(90, 1, 0, 0);
@@ -400,6 +555,7 @@ void Desenha(void)
     glRotated(90, 1, 0, 0);
     DesenhaObjetoWireframe(&faceParede);
     glPopMatrix();
+*/
     // Executa os comandos OpenGL
     glutSwapBuffers();
 }
@@ -548,19 +704,22 @@ void Inicializa (void)
     rotY = 0;
     obsX = obsY = 0;
     obsZ = 20;
+
+
+    glEnable(GL_DEPTH_TEST);
 }
 
 // Programa Principal
 int main(void)
 {
     // Define do modo de operação da GLUT
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 
     // Especifica a posição inicial da janela GLUT
     glutInitWindowPosition(5,5);
 
     // Especifica o tamanho inicial em pixels da janela GLUT
-    glutInitWindowSize(450,450);
+    glutInitWindowSize(2000,1000);
 
     // Cria a janela passando como argumento o título da mesma
     glutCreateWindow("Desenho do wireframe de um cubo");
