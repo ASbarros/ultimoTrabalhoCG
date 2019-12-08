@@ -308,3 +308,9 @@
 	<stdlib.h>
 	<stdio.h>
 
+1575813977 source:c:\users\geral\desktop\ultimotrabalhocg\main.cpp
+	<windows.h>
+	<GL/glut.h>
+	<stdlib.h>
+	<stdio.h>
+

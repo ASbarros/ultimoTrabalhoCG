@@ -71,8 +71,14 @@ VERT vertices[] =
     {70,10,30}, // 16
     {70,10,10}, // 17
     {50,10,10}, // 18
-
     {50,10,0}, // 19
+    {3.5,10,0}, // 20
+    {6.5,10,0}, // 21
+    {10,10,50}, // 22
+    {30,10,50}, // 23
+    {30,10,40}, // 23
+    {10,10,40}, // 23
+
 
 };
 // Definição das faces
@@ -96,11 +102,17 @@ FACE faces3[] =
     { 3, { 16,17,12}},
     { 3, { 17,18,12}},
     { 3, { 18,19,12}},
+    { 4, { 22,23,24,25}},
 
+};
+FACE faces4[] =
+{
+    { 6, { 0,10,9,7,20,1}},
+    { 4, { 10,2,3,21}},
 };
 OBJ telhado =
 {
-    vertices, faces3, 8
+    vertices, faces3, 9
 };
 // Finalmente, define o objeto pirâmide
 OBJ faceParede =
@@ -111,34 +123,37 @@ OBJ facePorta =
 {
     vertices, faces2, 3
 };
-
+OBJ faceJanela =
+{
+    vertices, faces4, 2
+};
 // Posição da fonte de luz
 GLfloat posLuz[4] = { 0.0, 50.0, 50.0, 1.0 };
 
 // Função responsável pela especificação dos parâmetros de iluminação
 void DefineIluminacao (void)
 {
-	GLfloat luzAmbiente[4]={0.2,0.2,0.2,1.0};
-	GLfloat luzDifusa[4]={0.7,0.7,0.7,1.0};	   // "cor"
-	GLfloat luzEspecular[4]={1.0, 1.0, 1.0, 1.0};// "brilho"
+    GLfloat luzAmbiente[4]= {0.2,0.2,0.2,1.0};
+    GLfloat luzDifusa[4]= {0.7,0.7,0.7,1.0};	  // "cor"
+    GLfloat luzEspecular[4]= {1.0, 1.0, 1.0, 1.0}; // "brilho"
 
-	// Capacidade de brilho do material
-	GLfloat especularidade[4]={1.0,1.0,1.0,1.0};
-	GLint especMaterial = 60;
+    // Capacidade de brilho do material
+    GLfloat especularidade[4]= {1.0,1.0,1.0,1.0};
+    GLint especMaterial = 60;
 
-	// Define a refletância do material
-	glMaterialfv(GL_FRONT,GL_SPECULAR, especularidade);
-	// Define a concentração do brilho
-	glMateriali(GL_FRONT,GL_SHININESS,especMaterial);
+    // Define a refletância do material
+    glMaterialfv(GL_FRONT,GL_SPECULAR, especularidade);
+    // Define a concentração do brilho
+    glMateriali(GL_FRONT,GL_SHININESS,especMaterial);
 
-	// Ativa o uso da luz ambiente
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente);
+    // Ativa o uso da luz ambiente
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente);
 
-	// Define os parâmetros da luz de número 0
-	glLightfv(GL_LIGHT0, GL_AMBIENT, luzAmbiente);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, luzDifusa );
-	glLightfv(GL_LIGHT0, GL_SPECULAR, luzEspecular );
-	glLightfv(GL_LIGHT0, GL_POSITION, posLuz );
+    // Define os parâmetros da luz de número 0
+    glLightfv(GL_LIGHT0, GL_AMBIENT, luzAmbiente);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, luzDifusa );
+    glLightfv(GL_LIGHT0, GL_SPECULAR, luzEspecular );
+    glLightfv(GL_LIGHT0, GL_POSITION, posLuz );
 }
 
 // Desenha um objeto em wireframe
@@ -175,7 +190,7 @@ void Desenha(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Chama a função que especifica os parâmetros de iluminação
-	DefineIluminacao();
+    DefineIluminacao();
 
     //glutWireCube(30);
     //glutWireTeapot(30);
@@ -196,11 +211,11 @@ void Desenha(void)
     glColor3f(0.0f, 0.0f, 0.0f);
 
     //PAREDES
-    DesenhaObjetoWireframe(&faceParede);
+    DesenhaObjetoWireframe(&faceJanela);
     //2
     glPushMatrix();
     glTranslated(10, 0, 0);
-    DesenhaObjetoWireframe(&faceParede);
+    DesenhaObjetoWireframe(&faceJanela);
     glRotated(-90,0,1,0);
     DesenhaObjetoWireframe(&faceParede);
     glTranslated(10,0,0);
@@ -226,7 +241,7 @@ void Desenha(void)
     //4
     glPushMatrix();
     glTranslated(30, 0, 0);
-    DesenhaObjetoWireframe(&faceParede);
+    DesenhaObjetoWireframe(&faceJanela);
     glRotated(-90,0,1,0);
     DesenhaObjetoWireframe(&faceParede);
     glPopMatrix();
@@ -234,7 +249,7 @@ void Desenha(void)
     //5
     glPushMatrix();
     glTranslated(40, 0, 0);
-    DesenhaObjetoWireframe(&faceParede);
+    DesenhaObjetoWireframe(&faceJanela);
     glPopMatrix();
 
     //6
@@ -247,33 +262,33 @@ void Desenha(void)
     //7
     glPushMatrix();
     glTranslated(50, 0, 10);
-    DesenhaObjetoWireframe(&faceParede);
+    DesenhaObjetoWireframe(&faceJanela);
     glPopMatrix();
 
     //8
     glPushMatrix();
     glTranslated(60, 0, 10);
-    DesenhaObjetoWireframe(&faceParede);
+    DesenhaObjetoWireframe(&faceJanela);
     glPopMatrix();
 
     //9
     glPushMatrix();
     glTranslated(70, 0, 10);
     glRotated(-90, 0, 1, 0);
-    DesenhaObjetoWireframe(&faceParede);
+    DesenhaObjetoWireframe(&facePorta);
     glPopMatrix();
 
     //10
     glPushMatrix();
     glTranslated(70, 0, 20);
     glRotated(-90, 0, 1, 0);
-    DesenhaObjetoWireframe(&faceParede);
+    DesenhaObjetoWireframe(&faceJanela);
     glPopMatrix();
 
     //11
     glPushMatrix();
     glTranslated(50, 0, 30);
-    DesenhaObjetoWireframe(&faceParede);
+    DesenhaObjetoWireframe(&faceJanela);
     glPopMatrix();
 
     //12
@@ -301,7 +316,7 @@ void Desenha(void)
     //15
     glPushMatrix();
     glTranslated(40, 0, 50);
-    DesenhaObjetoWireframe(&faceParede);
+    DesenhaObjetoWireframe(&faceJanela);
 
     glPopMatrix();
 
@@ -315,7 +330,7 @@ void Desenha(void)
     //17
     glPushMatrix();
     glTranslated(30, 0, 50);
-    DesenhaObjetoWireframe(&faceParede);
+    DesenhaObjetoWireframe(&faceJanela);
     glTranslated(0,0,-10);
     DesenhaObjetoWireframe(&facePorta);
     glPopMatrix();
@@ -342,7 +357,12 @@ void Desenha(void)
     //20
     glPushMatrix();
     glTranslated(10, 0, 40);
-    DesenhaObjetoWireframe(&faceParede);
+    DesenhaObjetoWireframe(&facePorta);
+    glTranslated(-10, 0, 0);
+
+    DesenhaObjetoWireframe(&facePorta);
+    glTranslated(10, 0, 0);
+
     glRotated(90,0,1,0);
     DesenhaObjetoWireframe(&faceParede);
     glColor3f(0.0f, 0.0f, 0.0f);
@@ -358,7 +378,7 @@ void Desenha(void)
     //22
     glPushMatrix();
     glTranslated(0, 0, 50);
-    DesenhaObjetoWireframe(&faceParede);
+    DesenhaObjetoWireframe(&faceJanela);
     glPopMatrix();
 
     //23
@@ -380,14 +400,14 @@ void Desenha(void)
     glPushMatrix();
     glTranslated(0, 0, 30);
     glRotated(90, 0, 1, 0);
-    DesenhaObjetoWireframe(&faceParede);
+    DesenhaObjetoWireframe(&faceJanela);
     glPopMatrix();
 
     //26
     glPushMatrix();
     glTranslated(0, 0, 20);
     glRotated(90, 0, 1, 0);
-    DesenhaObjetoWireframe(&faceParede);
+    DesenhaObjetoWireframe(&faceJanela);
     glRotated(-90,0,1,0);
     DesenhaObjetoWireframe(&faceParede);
     glColor3f(0.0f, 0.0f, 0.0f);
@@ -524,70 +544,70 @@ void Desenha(void)
         DesenhaObjetoWireframe(&faceParede);
         glPopMatrix();
     }
-/*
-    //TETO
-    glColor3f(0.0f, 0.0f, 1.0f);
+    /*
+        //TETO
+        glColor3f(0.0f, 0.0f, 1.0f);
 
-    //55 ATÉ 59
-    for(int i = 0; i < 50; i = i + 10)
-    {
+        //55 ATÉ 59
+        for(int i = 0; i < 50; i = i + 10)
+        {
+            glPushMatrix();
+            glTranslated(i, 10, 0);
+            glRotated(90, 1, 0, 0);
+            DesenhaObjetoWireframe(&faceParede);
+            glPopMatrix();
+        }
+        //60 ATÉ 66
+        for(int i = 0; i < 70; i = i + 10)
+        {
+            glPushMatrix();
+            glTranslated(i, 10, 10);
+            glRotated(90, 1, 0, 0);
+            DesenhaObjetoWireframe(&faceParede);
+            glPopMatrix();
+        }
+
+        //67 ATÉ 73
+        for(int i = 0; i < 70; i = i + 10)
+        {
+            glPushMatrix();
+            glTranslated(i, 10, 20);
+            glRotated(90, 1, 0, 0);
+            DesenhaObjetoWireframe(&faceParede);
+            glPopMatrix();
+        }
+
+        //74 ATÉ 78
+        for(int i = 0; i < 50; i = i + 10)
+        {
+            glPushMatrix();
+            glTranslated(i, 10, 30);
+            glRotated(90, 1, 0, 0);
+            DesenhaObjetoWireframe(&faceParede);
+            glPopMatrix();
+        }
+
+        //79
         glPushMatrix();
-        glTranslated(i, 10, 0);
+        glTranslated(0, 10, 40);
         glRotated(90, 1, 0, 0);
         DesenhaObjetoWireframe(&faceParede);
         glPopMatrix();
-    }
-    //60 ATÉ 66
-    for(int i = 0; i < 70; i = i + 10)
-    {
+
+        //80
         glPushMatrix();
-        glTranslated(i, 10, 10);
+        glTranslated(30, 10, 40);
         glRotated(90, 1, 0, 0);
         DesenhaObjetoWireframe(&faceParede);
         glPopMatrix();
-    }
 
-    //67 ATÉ 73
-    for(int i = 0; i < 70; i = i + 10)
-    {
+        //81
         glPushMatrix();
-        glTranslated(i, 10, 20);
+        glTranslated(40, 10, 40);
         glRotated(90, 1, 0, 0);
         DesenhaObjetoWireframe(&faceParede);
         glPopMatrix();
-    }
-
-    //74 ATÉ 78
-    for(int i = 0; i < 50; i = i + 10)
-    {
-        glPushMatrix();
-        glTranslated(i, 10, 30);
-        glRotated(90, 1, 0, 0);
-        DesenhaObjetoWireframe(&faceParede);
-        glPopMatrix();
-    }
-
-    //79
-    glPushMatrix();
-    glTranslated(0, 10, 40);
-    glRotated(90, 1, 0, 0);
-    DesenhaObjetoWireframe(&faceParede);
-    glPopMatrix();
-
-    //80
-    glPushMatrix();
-    glTranslated(30, 10, 40);
-    glRotated(90, 1, 0, 0);
-    DesenhaObjetoWireframe(&faceParede);
-    glPopMatrix();
-
-    //81
-    glPushMatrix();
-    glTranslated(40, 10, 40);
-    glRotated(90, 1, 0, 0);
-    DesenhaObjetoWireframe(&faceParede);
-    glPopMatrix();
-*/
+    */
     // Executa os comandos OpenGL
     glutSwapBuffers();
 }
@@ -727,11 +747,11 @@ void Inicializa (void)
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
     // Habilita a definição da cor do material a partir da cor corrente
-	glEnable(GL_COLOR_MATERIAL);
-	//Habilita o uso de iluminação
-	glEnable(GL_LIGHTING);
-	// Habilita a luz de número 0
-	glEnable(GL_LIGHT0);
+    glEnable(GL_COLOR_MATERIAL);
+    //Habilita o uso de iluminação
+    glEnable(GL_LIGHTING);
+    // Habilita a luz de número 0
+    glEnable(GL_LIGHT0);
 
     // Inicializa a variável que especifica o ângulo da projeção
     // perspectiva
